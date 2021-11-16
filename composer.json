@@ -1,0 +1,14 @@
+{
+    "name": "matteo/wp-dynamic-qr-code-generator",
+    "type": "project",
+    "require": {
+        "chillerlan/php-qrcode": "^4.3"
+    },
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Matteo Gheza",
+            "email": "matteo.gheza07@gmail.com"
+        }
+    ]
+}
