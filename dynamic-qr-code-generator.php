@@ -6,6 +6,7 @@
 * Version: 1.0
 * Author: Your Name Here
 * Author URI: http://yourwebsiteurl.com/
+* Text Domain: dynamic-qr-code-generator
 **/
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -14,7 +15,7 @@ use chillerlan\QRCode\{QRCode, QROptions};
 
 require("vendor/autoload.php");
 
-add_action( 'init', 'qr_create_post_types' );
+add_action( 'init', 'dynamic_qr_code_generator_initialize' );
 add_action( 'wp', 'qr_redirect_to_url' );
 
 //load styles for the admin section
@@ -78,17 +79,17 @@ function qr_redirect_to_url() {
 }
 
 //create a custom post type to hold qr redirect data
-function qr_create_post_types() {
+function dynamic_qr_code_generator_initialize() {
 	register_post_type( 'qrcode',
 		array(
 			'labels' => array(
-				'name' => __( 'QR Redirects' ),
-				'singular_name' => __( 'QR Redirect' ),
-				'add_new' => __( 'Add QR Redirect'),
-				'add_new_item' => __( 'Add QR Redirect'),
-				'edit_item' => __( 'Edit QR Redirect' ),
-				'new_item' => __( 'New QR Redirect' ),
-				'view_item' => __( 'View QR Redirect' )
+				'name' => __( 'QR Redirects', 'dynamic-qr-code-generator' ),
+				'singular_name' => __( 'QR Redirect', 'dynamic-qr-code-generator' ),
+				'add_new' => __( 'Add QR Redirect', 'dynamic-qr-code-generator'),
+				'add_new_item' => __( 'Add QR Redirect', 'dynamic-qr-code-generator'),
+				'edit_item' => __( 'Edit QR Redirect', 'dynamic-qr-code-generator' ),
+				'new_item' => __( 'New QR Redirect', 'dynamic-qr-code-generator' ),
+				'view_item' => __( 'View QR Redirect', 'dynamic-qr-code-generator' )
 			),
 			'show_ui' => true,
 			'description' => 'Post type for QR Redirects',
@@ -116,6 +117,8 @@ function qr_create_post_types() {
         'api_version' => 2,
         'editor_script' => 'gutenberg-examples-01-esnext',
     ) );
+
+	load_plugin_textdomain( 'dynamic-qr-code-generator', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
 }
 
 //simple function to keep some stats on how many times a QR Code has been used
@@ -140,14 +143,14 @@ function qr_dynamic_add_custom_box() {
     //the redirect url
 	add_meta_box(
 		'dynamic_url',
-		__( 'Redirect URL', 'myplugin_textdomain' ),
+		__('Redirect URL', 'dynamic-qr-code-generator'),
 		'qr_redirect_custom_box',
 		'qrcode');
         
 	//the actual generated qr code
 	add_meta_box(
 		'dynamic_qr',
-		__( 'QR Code', 'myplugin_textdomain' ),
+		__('QR Code', 'dynamic-qr-code-generator'),
 		'qr_image_custom_box',
 		'qrcode',
 		'side');

@@ -1,0 +1,74 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Dynamic QR Code Generator\n"
+"POT-Creation-Date: 2021-11-17 16:31+0100\n"
+"PO-Revision-Date: 2021-11-17 16:29+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: dynamic-qr-code-generator.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: dynamic-qr-code-generator.php:86
+msgid "QR Redirects"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:87
+msgid "QR Redirect"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:88 dynamic-qr-code-generator.php:89
+msgid "Add QR Redirect"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:90
+msgid "Edit QR Redirect"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:91
+msgid "New QR Redirect"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:92
+msgid "View QR Redirect"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:146
+msgid "Redirect URL"
+msgstr ""
+
+#: dynamic-qr-code-generator.php:153
+msgid "QR Code"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Dynamic QR Code Generator"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://www.yourwebsiteurl.com/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "This is the very first plugin I ever created."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Your Name Here"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://yourwebsiteurl.com/"
+msgstr ""
