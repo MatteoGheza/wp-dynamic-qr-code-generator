@@ -350,7 +350,7 @@ function qr_dynamic_save_postdata( $post_id ) {
 	// invoke a fresh QRCode instance
 	$qrcode = new QRCode($options);
 
-	file_put_contents($filename, $qrcode->render($permalink));
+	$qrcode->render($permalink, $filename);
 
 	$img = $upload_dir['baseurl'].'/qrcodes/'.basename($filename);
 	
