@@ -25,8 +25,9 @@ function load_qr_admin_style() {
 		wp_register_style( 'qr_admin_css', plugins_url('/admin.css', __FILE__), false, '1.0.0' );
 		wp_enqueue_style( 'qr_admin_css' );
     }
-    wp_enqueue_script('quick-edit-script', plugin_dir_url(__FILE__) . '/post-quick-edit-script.js', array('jquery','inline-edit-post' ));
+    //wp_enqueue_script('quick-edit-script', plugin_dir_url(__FILE__) . '/post-quick-edit-script.js', array('jquery','inline-edit-post' ));
 }
+//TODO: decide if we can remove script
 add_action('admin_enqueue_scripts', 'load_qr_admin_style');
 
 //intercept the post before it actually renders so we can redirect if it's a qrcode
@@ -200,12 +201,13 @@ function qr_redirect_custom_box() {
 	echo '>H - recovery of up to 30% data loss</option>';
 	echo '</select></p>';
 	
-	//Size Field
-	echo '<p>';
-	echo '<div class="tooltip"><strong style="width: 150px; display: inline-block;">Size:</strong> ';
-	echo '<span class="tooltiptext">The size in pixels of the generated QR code.</span>';
-	echo '</div>';
-	echo '<select name="qr_redirect[size]">';
+	?>
+<div hidden>
+	<div class="tooltip"><strong style="width: 150px; display: inline-block;">Size:</strong>
+	    <span class="tooltiptext">The size in pixels of the generated QR code.</span>
+    </div>
+	<select name="qr_redirect[size]">
+<?php
 	for($i=1; $i<=30; $i++) {
 		echo '<option value="'.$i.'"';
 		if(!$size && $i==5) {
@@ -218,8 +220,10 @@ function qr_redirect_custom_box() {
 		echo ' - '.($i*29).' x '.($i*29).' pixels';
 		echo '</option>';
 	}
-	echo '</select></p>';
-	
+?>
+	</select>
+</div>
+<?php
 	//Reponse Code Field
 	echo '<p>';
 	echo '<div class="tooltip"><strong style="width: 150px; display: inline-block;">HTTP Response Code:</strong> ';
@@ -322,7 +326,6 @@ function qr_dynamic_save_postdata( $post_id ) {
 	
 	$permalink = get_permalink($post_id);
 	$errorCorrectionLevel = $_POST['qr_redirect']['ecl'];
-	$matrixPointSize = $_POST['qr_redirect']['size'];
 	$responseCode = $_POST['qr_redirect']['response'];
 	$adminNotes = sanitize_text_field($_POST['qr_redirect']['notes']);
 	
@@ -343,11 +346,27 @@ function qr_dynamic_save_postdata( $post_id ) {
 		unlink($oldfile);
 	}
 	
-	//QRcode::png($permalink, $filename, $errorCorrectionLevel, $matrixPointSize, 0);
+	switch ($errorCorrectionLevel) {
+		case 'L':
+			$eccLevel = QRCode::ECC_L;
+			break;
+		case 'M':
+		    $eccLevel = QRCode::ECC_M;
+			break;
+		case 'Q':
+			$eccLevel = QRCode::ECC_Q;
+			break;
+		case 'H':
+			$eccLevel = QRCode::ECC_H;
+			break;
+		default:
+		    $eccLevel = QRCode::ECC_L;
+			break;
+	}
 	$options = new QROptions([
 		'version'    => 5,
 		'outputType' => QRCode::OUTPUT_IMAGE_PNG,
-		'eccLevel'   => QRCode::ECC_L,
+		'eccLevel'   => $eccLevel,
 	]);
 	
 	// invoke a fresh QRCode instance
