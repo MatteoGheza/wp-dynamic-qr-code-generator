@@ -46,8 +46,8 @@ function dynamic_qr_code_generator_activate() {
 	);
 
     // add all the capabilities by looping through them
-    foreach ( $caps as $role => $role_caps ) {
-		$role = get_role( $role );
+    foreach ( $caps as $role_name => $role_caps ) {
+		$role = get_role( $role_name );
 		foreach ( $role_caps as $cap ) {
 			$role->add_cap( $cap );
 		}
