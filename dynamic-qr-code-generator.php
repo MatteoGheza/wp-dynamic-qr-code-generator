@@ -38,10 +38,6 @@ function dynamic_qr_code_generator_activate() {
 			'read_qr',
 			'publish_qrs',
 			'read_private_qrs'
-		),
-		'subscriber' => array(
-			'read_qr',
-			'read_private_qrs'
 		)
 	);
 
