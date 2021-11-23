@@ -18,6 +18,30 @@ require("vendor/autoload.php");
 add_action( 'init', 'dynamic_qr_code_generator_initialize' );
 add_action( 'wp', 'qr_redirect_to_url' );
 
+/**
+ * Activate the plugin.
+ */
+function dynamic_qr_code_generator_activate() { 
+    $editor = get_role( 'administrator' );
+
+    // a list of plugin-related capabilities to add to the Editor role
+    $caps = array(
+		'edit_qr',
+		'read_qr',
+		'delete_qr',
+		'edit_qrs',
+		'edit_others_qrs',
+		'publish_qrs',
+		'read_private_qrs'
+	);
+
+    // add all the capabilities by looping through them
+    foreach ( $caps as $cap ) {
+        $editor->add_cap( $cap );
+    }
+}
+register_activation_hook( __FILE__, 'dynamic_qr_code_generator_activate' );
+
 //load styles for the admin section
 function load_qr_admin_style() {
 	global $post_type;
@@ -100,7 +124,16 @@ function dynamic_qr_code_generator_initialize() {
 			'exclude_from_search' => true,
 			'supports' => array('title'),
 			'rewrite' => array('slug' => 'qr'),
-			'can_export' => true
+			'can_export' => true,
+			'capabilities' => array(
+				'edit_post'             => 'edit_qr',
+				'read_post'             => 'read_qr',
+				'delete_post'           => 'delete_qr',
+				'edit_posts'            => 'edit_qrs',
+				'edit_others_posts'     => 'edit_others_qrs',
+				'publish_posts'         => 'publish_qrs',
+				'read_private_posts'    => 'read_private_qrs',
+			)
 		)
 	);
 
@@ -447,7 +480,7 @@ add_action('bulk_edit_custom_box',  'qr_add_quick_edit', 10, 2);
  */ 
 function qr_quick_edit_save( $post_id ){
 	// check user capabilities
-	if ( !current_user_can( 'edit_post', $post_id ) ) {
+	if ( !current_user_can( 'edit_pages', $post_id ) ) {
 		return;
 	}
 	
@@ -467,7 +500,7 @@ add_action( 'save_post', 'qr_quick_edit_save' );
  */ 
 function qr_save_bulk_edit_hook() {
 	// check user capabilities
-	if ( !current_user_can( 'edit_posts', $post_id ) ) {
+	if ( !current_user_can( 'edit_pages', $post_id ) ) {
 		exit;
 	}
 	
