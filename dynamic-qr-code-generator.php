@@ -19,25 +19,38 @@ add_action( 'init', 'dynamic_qr_code_generator_initialize' );
 add_action( 'wp', 'qr_redirect_to_url' );
 
 /**
- * Activate the plugin.
+ * When plugin is activated
  */
 function dynamic_qr_code_generator_activate() { 
-    $editor = get_role( 'administrator' );
-
-    // a list of plugin-related capabilities to add to the Editor role
+    // a list of plugin-related capabilities
     $caps = array(
-		'edit_qr',
-		'read_qr',
-		'delete_qr',
-		'edit_qrs',
-		'edit_others_qrs',
-		'publish_qrs',
-		'read_private_qrs'
+		'administrator' => array(
+			'edit_qr',
+			'read_qr',
+			'delete_qr',
+			'edit_qrs',
+			'edit_others_qrs',
+			'publish_qrs',
+			'read_private_qrs'
+		),
+		'author' => array(
+			'edit_qr',
+			'read_qr',
+			'publish_qrs',
+			'read_private_qrs'
+		),
+		'subscriber' => array(
+			'read_qr',
+			'read_private_qrs'
+		)
 	);
 
     // add all the capabilities by looping through them
-    foreach ( $caps as $cap ) {
-        $editor->add_cap( $cap );
+    foreach ( $caps as $role => $role_caps ) {
+		$role = get_role( $role );
+		foreach ( $role_caps as $cap ) {
+			$role->add_cap( $cap );
+		}
     }
 }
 register_activation_hook( __FILE__, 'dynamic_qr_code_generator_activate' );
