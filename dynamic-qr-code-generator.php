@@ -178,7 +178,7 @@ function qr_redirect_custom_box() {
 <div id="meta_inner">
 <p>
 	<strong>URL to Redirect to:</strong>
-	<input type="text" name="qr_redirect[url]" value="'.$url.'" style="width: 80%;" />
+	<input type="text" name="qr_redirect[url]" value="<?php echo($url); ?>" style="width: 80%;" />
 </p>
 <?php
 	//Error Correction Level Field
