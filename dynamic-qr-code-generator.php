@@ -171,7 +171,6 @@ function qr_redirect_custom_box() {
     //get the saved metadata
     $url = get_post_meta($post->ID,'qr_redirect_url',true);
     $ecl = get_post_meta($post->ID,'qr_redirect_ecl',true);
-    $size = get_post_meta($post->ID,'qr_redirect_size',true);
     $response = get_post_meta($post->ID,'qr_redirect_response',true);
     $notes = get_post_meta($post->ID,'qr_redirect_notes',true);
 ?>
@@ -180,55 +179,18 @@ function qr_redirect_custom_box() {
 	<strong>URL to Redirect to:</strong>
 	<input type="text" name="qr_redirect[url]" value="<?php echo($url); ?>" style="width: 80%;" />
 </p>
-<?php
-	//Error Correction Level Field
-	echo '<p>';
-	echo '<div class="tooltip"><strong style="width: 150px; display: inline-block;">Error Correction Level:</strong> ';
-	echo '<span class="tooltiptext">The Error Correction Level is the amount of "backup" data in the QR code to account for damage it may receive in its intended environment.  Higher levels result in a more complex QR image.</span>';
-	echo '</div>';
-	echo '<select name="qr_redirect[ecl]">';
-	echo '<option value="L"';
-	if($ecl == "L") { echo ' selected="selected"'; }
-	echo '>L - recovery of up to 7% data loss</option>';
-	echo '<option value="M"';
-	if($ecl == "M") {
-		echo ' selected="selected"';
-	}
-	echo '>M - recovery of up to 15% data loss</option>';
-	echo '<option value="Q"';
-	if($ecl == "Q") {
-		echo ' selected="selected"';
-	}
-	echo'>Q - recovery of up to 25% data loss</option>';
-	echo '<option value="H"';
-	if($ecl == "H") {
-		echo ' selected="selected"';
-	}
-	echo '>H - recovery of up to 30% data loss</option>';
-	echo '</select></p>';
-	
-	?>
-<div hidden>
-	<div class="tooltip"><strong style="width: 150px; display: inline-block;">Size:</strong>
-	    <span class="tooltiptext">The size in pixels of the generated QR code.</span>
-    </div>
-	<select name="qr_redirect[size]">
-<?php
-	for($i=1; $i<=30; $i++) {
-		echo '<option value="'.$i.'"';
-		if(!$size && $i==5) {
-			echo ' selected="selected"';
-		}
-		elseif($size == $i) {
-			echo ' selected="selected"';
-		}
-		echo '>'.$i;
-		echo ' - '.($i*29).' x '.($i*29).' pixels';
-		echo '</option>';
-	}
-?>
+<p>
+	<div class="tooltip">
+		<strong style="width: 150px; display: inline-block;">Error Correction Level:</strong>
+		<span class="tooltiptext">The Error Correction Level is the amount of "backup" data in the QR code to account for damage it may receive in its intended environment.  Higher levels result in a more complex QR image.</span>
+	</div>
+	<select name="qr_redirect[ecl]">
+		<option value="L" <?php if($ecl == "L") { echo (' selected="selected"'); } ?>>L - recovery of up to 7% data loss</option>
+		<option value="M" <?php if($ecl == "M") { echo (' selected="selected"'); } ?>>M - recovery of up to 15% data loss</option>
+		<option value="Q" <?php if($ecl == "Q") { echo (' selected="selected"'); } ?>>Q - recovery of up to 25% data loss</option>
+		<option value="H" <?php if($ecl == "H") { echo (' selected="selected"'); } ?>>H - recovery of up to 30% data loss</option>
 	</select>
-</div>
+</p>
 <p>
 	<div class="tooltip">
 		<strong style="width: 150px; display: inline-block;">HTTP Response Code:</strong>
@@ -339,7 +301,7 @@ function qr_dynamic_save_postdata( $post_id ) {
 	}
 	
 	//processing form input
-	$filename = $PNG_TEMP_DIR.'qr'.md5($permalink.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
+	$filename = $PNG_TEMP_DIR.'qr'.md5($permalink.'|'.$errorCorrectionLevel).'.png';
 	
 	//if we're updating an image, we dont want to keep the old version
 	$oldfile = str_replace($upload_dir['baseurl'].'/qrcodes/', $PNG_TEMP_DIR, get_post_meta($post_id,'qr_image_url',true));
@@ -380,7 +342,6 @@ function qr_dynamic_save_postdata( $post_id ) {
 	update_post_meta($post_id,'qr_image_url',$img);
 	update_post_meta($post_id,'qr_redirect_url',$url);
 	update_post_meta($post_id,'qr_redirect_ecl',$errorCorrectionLevel);
-	update_post_meta($post_id,'qr_redirect_size',$matrixPointSize);
 	update_post_meta($post_id,'qr_redirect_response',$responseCode);
 	update_post_meta($post_id,'qr_redirect_notes',$adminNotes);
 }
@@ -406,7 +367,6 @@ add_shortcode( 'qr-code', 'qr_show_code');
 function qr_quick_edit_columns( $column_array ) {
  
 	$column_array['qr_redirect_response'] = 'HTTP Response Code';
-	$column_array['qr_redirect_size'] = 'Size';
 	$column_array['qr_redirect_ecl'] = 'Error Correction Level';
 	$column_array['qr_redirect_count'] = 'Redirect Count';
 	$column_array['qr_redirect_shortcode'] = 'Short Code';
@@ -424,15 +384,6 @@ function qr_populate_both_columns( $column_name, $id ) {
 			if(get_post_meta( $id, 'qr_redirect_response', true )) {
 				//put the post_ID in the id for a container div so we can grab it with javascript for bulk editing
 				echo '<div id="qr_redirect_response_'.$id.'">'.get_post_meta( $id, 'qr_redirect_response', true ).'</div>';
-			}
-			else {
-				echo 'Not set';
-			}
-			break;
-		}
-		case 'qr_redirect_size': {
-			if(get_post_meta( $id, 'qr_redirect_size', true )) {
-				echo get_post_meta( $id, 'qr_redirect_size', true );
 			}
 			else {
 				echo 'Not set';
