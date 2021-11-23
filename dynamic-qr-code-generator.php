@@ -230,7 +230,7 @@ function qr_redirect_custom_box() {
 		?>
 		<p>
 			<strong>Actual Size:</strong></br ><br />
-			<?php do_shortcode('[qr-code id="'.$post->ID.'"]'); ?>
+			<?php echo(do_shortcode('[qr-code id="'.$post->ID.'"]')); ?>
 		</p>
 		<?php
 	}
