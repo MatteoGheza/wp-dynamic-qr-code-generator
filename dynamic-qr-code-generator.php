@@ -1,11 +1,11 @@
 <?php
 /**
 * Plugin Name: Dynamic QR Code Generator
-* Plugin URI: https://www.yourwebsiteurl.com/
-* Description: This is the very first plugin I ever created.
+* Plugin URI: https://github.com/MatteoGheza/wp-dynamic-qr-code-generator
+* Description: Generate QR Codes with view stats. Forked from https://wordpress.org/plugins/qr-redirector/
 * Version: 1.0
-* Author: Your Name Here
-* Author URI: http://yourwebsiteurl.com/
+* Author: Matteo Gheza
+* Author URI: https://github.com/MatteoGheza
 * Text Domain: dynamic-qr-code-generator
 **/
 
@@ -93,7 +93,7 @@ function dynamic_qr_code_generator_initialize() {
 				'view_item' => __( 'View QR Redirect', 'dynamic-qr-code-generator' )
 			),
 			'show_ui' => true,
-			'description' => 'Post type for QR Redirects',
+			'description' => __( 'Post type for QR Redirects', 'dynamic-qr-code-generator' ),
 			//'menu_position' => 5,
 			'menu_icon' => WP_PLUGIN_URL.'/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . '/qr-menu-icon.png',
 			'public' => true,
@@ -104,6 +104,8 @@ function dynamic_qr_code_generator_initialize() {
 		)
 	);
 
+	/*
+	//TODO: Gutemberg block type
     // automatically load dependencies and version
     $asset_file = include( plugin_dir_path( __FILE__ ) . 'qr-code-block/build/index.asset.php');
  
@@ -120,6 +122,7 @@ function dynamic_qr_code_generator_initialize() {
     ) );
 
 	load_plugin_textdomain( 'dynamic-qr-code-generator', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
+	*/
 }
 
 //simple function to keep some stats on how many times a QR Code has been used
@@ -171,10 +174,13 @@ function qr_redirect_custom_box() {
     $size = get_post_meta($post->ID,'qr_redirect_size',true);
     $response = get_post_meta($post->ID,'qr_redirect_response',true);
     $notes = get_post_meta($post->ID,'qr_redirect_notes',true);
-
-    //output the form
-	echo '<p> <strong>URL to Redirect to:</strong> <input type="text" name="qr_redirect[url]" value="'.$url.'" style="width: 80%;" /> </p>';
-	
+?>
+<div id="meta_inner">
+<p>
+	<strong>URL to Redirect to:</strong>
+	<input type="text" name="qr_redirect[url]" value="'.$url.'" style="width: 80%;" />
+</p>
+<?php
 	//Error Correction Level Field
 	echo '<p>';
 	echo '<div class="tooltip"><strong style="width: 150px; display: inline-block;">Error Correction Level:</strong> ';
@@ -223,57 +229,52 @@ function qr_redirect_custom_box() {
 ?>
 	</select>
 </div>
+<p>
+	<div class="tooltip">
+		<strong style="width: 150px; display: inline-block;">HTTP Response Code:</strong>
+		<span class="tooltiptext">The HTTP Response Code defaults to 302 - Found.  You may set it to any of the specified options, if needed.</span>
+	</div>
+	<select name="qr_redirect[response]">
+		<option value="301" <?php if($response == 301) { echo (' selected="selected"'); } ?>>301 - Moved Permanently</option>
+		<option value="302" <?php if($response == 302) { echo (' selected="selected"'); } ?>>302 - Found</option>
+		<option value="307" <?php if($response == 307) { echo (' selected="selected"'); } ?>>307 - Temporary Redirect</option>
+		<option value="308" <?php if($response == 308) { echo (' selected="selected"'); } ?>>308 - Permanent Redirect</option>
+	</select>
+</p>
+<p>
+	<div class="tooltip">
+		<strong>Admin Notes:</strong>
+		<span class="tooltiptext">Anything entered here is for your reference only and will not appear outside of the WordPress backend.</span>
+	</div>
+	<br />
+	<textarea style="width: 75%; height: 150px;" name="qr_redirect[notes]"><?php echo($notes); ?></textarea>
+</p>
 <?php
-	//Reponse Code Field
-	echo '<p>';
-	echo '<div class="tooltip"><strong style="width: 150px; display: inline-block;">HTTP Response Code:</strong> ';
-	echo '<span class="tooltiptext">The HTTP Response Code defaults to 302 - Found.  You may set it to any of the specified options, if needed.</span>';
-	echo '</div>';
-	echo '<select name="qr_redirect[response]">';
-	echo '<option value="301"';
-	if($response == "301") { echo ' selected="selected"'; }
-	echo '>301 - Moved Permanently</option>';
-	echo '<option value="302"';
-	if($response == "302" || $response == '') {
-		echo ' selected="selected"';
-	}
-	echo '>302 - Found</option>';
-	echo '<option value="307"';
-	if($response == "307") {
-		echo ' selected="selected"';
-	}
-	echo'>307 - Temporary Redirect';
-	echo '<option value="308"';
-	if($response == "308") {
-		echo ' selected="selected"';
-	}
-	echo '>308 - Permanent Redirect</option>';
-	echo '</select></p>';
-	
-	//Admin Notes Field
-	echo '<p>';
-	echo '<div class="tooltip"><strong>Admin Notes:</strong> ';
-	echo '<span class="tooltiptext">Anything entered here is for your reference only and will not appear outside of the WordPress backend.</span>';
-	echo '</div>';
-	echo '<br /> <textarea style="width: 75%; height: 150px;" name="qr_redirect[notes]">'.$notes.'</textarea></p>';
-	
 	//output some additional info if the post had already been saved
 	if($post->post_status !='auto-draft') {
 		//post has not yet been saved if status is auto-draft
-		echo '<p><strong>Shortcode:</strong><br />';
-		echo 'Copy and paste this short code into your posts or pages to display this QR Code:';
-		
-		echo '<br /><br /><code>[qr-code id="'.$post->ID.'"]</code></p>';
+		?>
+		<p>
+			<strong>Shortcode:</strong>
+			<br />
+			Copy and paste this short code into your posts or pages to display this QR Code:
+			<br /><br />
+			<code>[qr-code id="<?php echo($post->ID); ?>"]</code>
+		</p>
+		<?php
 	}
 	
 	if($post->post_status !='auto-draft') {
-		echo '<p>';
-		echo '<strong>Actual Size:</strong></br ><br />';
-		echo do_shortcode('[qr-code id="'.$post->ID.'"]');
-		echo '</p>';
+		?>
+		<p>
+			<strong>Actual Size:</strong></br ><br />
+			<?php do_shortcode('[qr-code id="'.$post->ID.'"]'); ?>
+		</p>
+		<?php
 	}
-	
-	echo '</div>';
+?>
+</div>
+<?php
 }
 
 //print the qr code image and meta info
