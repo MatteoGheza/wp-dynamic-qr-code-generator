@@ -167,6 +167,41 @@ function dynamic_qr_code_generator_initialize() {
 	*/
 }
 
+function qr_add_role_caps() {
+	$role_caps = [
+		"contributor" => [
+			"read_qr",
+			"read_private_qrs"
+		],
+		"author" => [
+			"edit_qr",
+			"read_qr",
+			"delete_qr",
+			"edit_qrs",
+			"edit_others_qrs",
+			"publish_qrs",
+			"read_private_qrs"
+		],
+		"editor" => [
+			"edit_qr",
+			"read_qr",
+			"delete_qr",
+			"edit_qrs",
+			"edit_others_qrs",
+			"publish_qrs",
+			"read_private_qrs"
+		]
+	];
+
+	foreach ($role_caps as $role_name => $cap_list) {
+		$role = get_role($role_name);
+		foreach ($cap_list as $cap) {
+			$role->add_cap($cap);
+		}
+	}
+}
+add_action( 'init', 'qr_add_role_caps', 11 );
+
 //simple function to keep some stats on how many times a QR Code has been used
 function qr_add_count($post_id) {
 	$count = get_post_meta($post_id,'qr_redirect_count',true);
